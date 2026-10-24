@@ -1,0 +1,5 @@
+interface:
+  display_name: "OpenReview Casebook"
+  short_description: "Build evidence-backed OpenReview HTML casebooks"
+  brand_color: "#176B55"
+  default_prompt: "Use $openreview-casebook to find papers similar to my research, analyze their reviews and rebuttals, and create an offline HTML casebook."
