@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Research Project：OpenReview 审稿案例手册模板</title>
+  <meta name="description" content="用于整理相近论文、公开审稿意见、作者回应与投稿启示的通用离线 HTML 模板。" />
+  <style>
+    :root {
+      --ink: #11211d;
+      --muted: #5c6d67;
+      --paper: #f5f1e8;
+      --card: #fffdf8;
+      --line: #d9d3c6;
+      --green: #176b55;
+      --green-2: #d8eee5;
+      --orange: #ca5b2d;
+      --orange-2: #fae2d5;
+      --blue: #244c80;
+      --blue-2: #dfe9f5;
+      --purple: #67488f;
+      --purple-2: #ebe2f4;
+      --shadow: 0 16px 50px rgba(24, 40, 34, .09);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 85% 4%, rgba(202,91,45,.11), transparent 26rem),
+        radial-gradient(circle at 8% 18%, rgba(23,107,85,.10), transparent 25rem),
+        var(--paper);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .shell { width: min(1180px, calc(100% - 34px)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(245,241,232,.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(120,120,105,.22);
+    }
+    .topbar-inner {
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.02em; }
+    .brand-mark {
+      width: 30px; height: 30px; border-radius: 9px;
+      display: grid; place-items: center; color: white;
+      background: linear-gradient(145deg, var(--green), #0f4236);
+      box-shadow: 0 7px 20px rgba(23,107,85,.25);
+    }
+    .nav { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted); }
+    .nav a { text-decoration: none; }
+    .nav a:hover { color: var(--green); }
+
+    .hero { padding: 76px 0 42px; }
+    .eyebrow { color: var(--green); font-weight: 800; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+    h1 {
+      margin: 12px 0 18px;
+      max-width: 930px;
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: clamp(40px, 7vw, 78px);
+      line-height: 1.03;
+      letter-spacing: -.045em;
+    }
+    .hero-lead { max-width: 880px; font-size: clamp(17px, 2.2vw, 22px); color: #3e514a; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--ink);
+      color: white;
+      text-decoration: none;
+      font-weight: 750;
+      font-size: 14px;
+    }
+    .btn.secondary { background: transparent; color: var(--ink); }
+    .btn:hover { transform: translateY(-1px); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 42px;
+    }
+    .stat {
+      border-top: 2px solid var(--ink);
+      padding: 12px 2px 0;
+    }
+    .stat strong { display: block; font-size: 28px; line-height: 1.2; }
+    .stat span { color: var(--muted); font-size: 13px; }
+
+    section { padding: 42px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .section-kicker { color: var(--orange); font-size: 12px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h2 {
+      margin: 5px 0 0;
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.12;
+      letter-spacing: -.025em;
+    }
+    .section-note { max-width: 470px; color: var(--muted); font-size: 14px; }
+
+    .takeaway {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: clamp(28px, 5vw, 52px);
+      background: #112a23;
+      color: #f8f4e9;
+      box-shadow: var(--shadow);
+    }
+    .takeaway::after {
+      content: "";
+      position: absolute; width: 340px; height: 340px; border-radius: 50%;
+      right: -130px; top: -170px; border: 62px solid rgba(244,173,104,.13);
+    }
+    .takeaway h2 { max-width: 770px; position: relative; z-index: 1; }
+    .takeaway-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3,1fr); gap: 15px; margin-top: 28px; }
+    .takeaway-item { padding-top: 14px; border-top: 1px solid rgba(255,255,255,.26); }
+    .takeaway-item b { display: block; color: #ffbf8f; margin-bottom: 5px; }
+    .takeaway-item span { color: #d3ddd8; font-size: 14px; }
+
+    .attack-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .attack-card {
+      min-height: 205px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: rgba(255,253,248,.72);
+    }
+    .attack-num { color: var(--orange); font: 800 13px/1 ui-monospace, monospace; }
+    .attack-card h3 { margin: 22px 0 8px; font-size: 18px; }
+    .attack-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 9px; align-items: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.52);
+      margin-bottom: 18px;
+    }
+    .search {
+      min-width: 260px; flex: 1;
+      border: 1px solid #c9c3b8;
+      background: #fffdf8;
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: var(--ink);
+    }
+    .chip {
+      border: 1px solid #c9c3b8;
+      background: transparent;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .chip.active, .chip:hover { color: white; background: var(--green); border-color: var(--green); }
+
+    .paper-list { display: grid; gap: 20px; }
+    .paper-card {
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: 0 10px 35px rgba(31,50,43,.055);
+      overflow: hidden;
+    }
+    .paper-card[hidden] { display: none; }
+    .paper-top { padding: 26px 28px 21px; display: grid; grid-template-columns: 1fr auto; gap: 20px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .badge { border-radius: 999px; padding: 4px 9px; background: var(--green-2); color: var(--green); font-size: 12px; font-weight: 800; }
+    .badge.blue { color: var(--blue); background: var(--blue-2); }
+    .badge.purple { color: var(--purple); background: var(--purple-2); }
+    .badge.orange { color: #9a421e; background: var(--orange-2); }
+    .paper-title { margin: 0; font: 700 clamp(22px,3vw,34px)/1.18 Georgia, "Times New Roman", serif; letter-spacing: -.025em; }
+    .paper-sub { margin: 9px 0 0; color: var(--muted); font-size: 14px; }
+    .relevance {
+      width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center;
+      text-align: center; color: var(--green); background: var(--green-2);
+      font-size: 11px; line-height: 1.1; font-weight: 750;
+    }
+    .relevance strong { display: block; font-size: 25px; }
+    .paper-body { border-top: 1px solid var(--line); padding: 23px 28px 26px; }
+    .triad { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+    .panel { border-radius: 16px; padding: 17px; background: #f7f3ea; }
+    .panel.review { background: var(--orange-2); }
+    .panel.response { background: var(--blue-2); }
+    .panel.lesson { background: var(--green-2); }
+    .panel h4 { margin: 0 0 9px; font-size: 14px; letter-spacing: .01em; }
+    .panel ul { margin: 0; padding-left: 18px; }
+    .panel li { margin: 5px 0; font-size: 13.5px; }
+    .paper-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 17px; }
+    .scoreline { color: var(--muted); font-size: 13px; margin-right: auto; }
+    .score-dot { display: inline-grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; margin-left: 4px; background: #ece5d8; color: var(--ink); font-weight: 800; }
+    .linkbtn, .details-btn {
+      text-decoration: none; border: 1px solid #bfb8ab; background: transparent; color: var(--ink);
+      border-radius: 999px; padding: 7px 11px; font-size: 12px; font-weight: 750;
+    }
+    .linkbtn:hover, .details-btn:hover { border-color: var(--green); color: var(--green); }
+    .details { display: none; padding: 0 28px 26px; }
+    .details.open { display: block; }
+    .review-notes { border-top: 1px dashed #c7c0b4; padding-top: 18px; display: grid; gap: 12px; }
+    .review-note { display: grid; grid-template-columns: 108px 1fr; gap: 16px; }
+    .review-note strong { font-size: 13px; color: var(--orange); }
+    .review-note p { margin: 0; color: #475851; font-size: 13.5px; }
+    .missing { padding: 12px 14px; border-left: 3px solid var(--orange); background: #faf3e8; color: #6f5747; font-size: 13px; }
+
+    .risk-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; counter-reset: risk; }
+    .risk {
+      counter-increment: risk; position: relative; padding: 20px 20px 20px 68px;
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    }
+    .risk::before {
+      content: counter(risk, decimal-leading-zero); position: absolute; left: 19px; top: 20px;
+      color: var(--orange); font: 800 15px/1 ui-monospace, monospace;
+    }
+    .risk h3 { margin: 0 0 6px; font-size: 16px; }
+    .risk p { margin: 0; color: var(--muted); font-size: 13.5px; }
+
+    .reply-box { display: grid; grid-template-columns: .8fr 1.2fr; gap: 20px; align-items: start; }
+    .reply-rule { background: #172722; color: #f8f4e9; border-radius: 24px; padding: 25px; }
+    .reply-rule h3 { margin: 0 0 9px; font-size: 22px; }
+    .reply-rule p { color: #cbd8d3; }
+    .reply-steps { display: grid; gap: 10px; }
+    .reply-step { display: grid; grid-template-columns: 38px 1fr; gap: 12px; padding: 15px; background: var(--card); border: 1px solid var(--line); border-radius: 15px; }
+    .reply-step b:first-child { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--green-2); color: var(--green); }
+    .reply-step p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+
+    .source-box { border-top: 1px solid var(--line); padding-top: 22px; color: var(--muted); font-size: 13px; }
+    .source-box a { color: var(--blue); }
+    footer { padding: 35px 0 60px; color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 930px) {
+      .takeaway-grid, .triad { grid-template-columns: 1fr; }
+      .attack-grid { grid-template-columns: 1fr 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .reply-box { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .nav { display: none; }
+      .hero { padding-top: 48px; }
+      .attack-grid, .risk-list { grid-template-columns: 1fr; }
+      .paper-top { grid-template-columns: 1fr; }
+      .relevance { width: auto; height: auto; border-radius: 12px; display: flex; justify-content: space-between; padding: 9px 12px; }
+      .relevance strong { font-size: 18px; margin-right: 6px; }
+      .review-note { grid-template-columns: 1fr; gap: 2px; }
+      .paper-top, .paper-body, .details { padding-left: 18px; padding-right: 18px; }
+    }
+    @media print {
+      .topbar, .controls, .details-btn, .hero-actions { display: none !important; }
+      body { background: white; }
+      .paper-card, .attack-card, .risk { break-inside: avoid; box-shadow: none; }
+      .details { display: block !important; }
+      section { padding: 22px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="brand-mark">R</span><span>OpenReview Casebook</span></div>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#overview">先看结论</a><a href="#cases">论文案例</a><a href="#ours">项目预审</a><a href="#rebuttal">Rebuttal写法</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="eyebrow">Research Project · Reviewer Intelligence</div>
+      <h1>相近工作如何被质疑，<br>作者又如何回应？</h1>
+      <p class="hero-lead">这是一份通用的审稿案例手册模板。下面所有论文、审稿意见、分数和回应均为虚构示例，只用于展示最终页面的栏目、层次、配色和交互。生成正式手册时必须用当前研究主题的公开证据完整替换。</p>
+      <div class="hero-actions"><a class="btn" href="#cases">查看示例案例</a><a class="btn secondary" href="#ours">查看项目预审结构</a></div>
+      <div class="stats" aria-label="资料统计">
+        <div class="stat"><strong>3</strong><span>个虚构论文案例</span></div><div class="stat"><strong>9</strong><span>条示例审稿意见</span></div><div class="stat"><strong>6</strong><span>条示例作者回应</span></div><div class="stat"><strong>4</strong><span>类常见审稿风险</span></div>
+      </div>
+    </section>
+
+    <section id="overview" class="shell">
+      <div class="takeaway">
+        <div class="section-kicker" style="color:#ffbf8f">The short answer</div>
+        <h2>高质量案例手册不只列相关论文，而是把审稿质疑、作者证据和对当前项目的启示连接起来。</h2>
+        <div class="takeaway-grid">
+          <div class="takeaway-item"><b>先找决定性问题</b><span>优先呈现会改变接收判断的有效性、创新性与泛化质疑。</span></div>
+          <div class="takeaway-item"><b>区分事实与判断</b><span>论文主张、审稿意见、作者回应和项目启示必须清楚分开。</span></div>
+          <div class="takeaway-item"><b>让回应落到证据</b><span>最有价值的 rebuttal 经验是新增实验、定义、分析或限制，而不是语气更强。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell">
+      <div class="section-head"><div><div class="section-kicker">Recurring reviewer attacks</div><h2>这些问题经常反复出现</h2></div><p class="section-note">正式页面应根据检索到的公开评审重新归纳，而不是机械复用这里的示例措辞。</p></div>
+      <div class="attack-grid">
+        <article class="attack-card"><span class="attack-num">01 / VALIDITY</span><h3>评估真的测到了声称的能力吗？</h3><p>审稿人通常会追问构念定义、标注质量、指标边界和替代解释。</p></article>
+        <article class="attack-card"><span class="attack-num">02 / NOVELTY</span><h3>贡献是否超出已有方法的直接组合？</h3><p>需要用明确的技术差异、学习信号和受控消融说明新增价值。</p></article>
+        <article class="attack-card"><span class="attack-num">03 / GENERALITY</span><h3>结论能否跨模型、数据或场景成立？</h3><p>外部数据、未见条件和第二种模型架构往往比更多同分布结果更重要。</p></article>
+        <article class="attack-card"><span class="attack-num">04 / EVIDENCE</span><h3>回应是否真正排除了替代解释？</h3><p>有效回应应增加可核验的实验或分析，并主动收窄证据尚未覆盖的主张。</p></article>
+      </div>
+    </section>
+
+    <section id="cases" class="shell">
+      <div class="section-head"><div><div class="section-kicker">Fictional review cases</div><h2>逐篇拆审稿与 rebuttal</h2></div><p class="section-note">以下内容全部为虚构示例，不对应任何真实论文、项目、作者或公开评审记录。</p></div>
+      <div class="controls">
+        <input id="search" class="search" type="search" placeholder="搜索：有效性、反事实、泛化、数据质量……" aria-label="搜索论文案例" />
+        <button class="chip active" data-filter="all">全部</button><button class="chip" data-filter="closest">最相似</button><button class="chip" data-filter="benchmark">Benchmark</button><button class="chip" data-filter="method">方法</button><button class="chip" data-filter="evaluation">评估</button>
+      </div>
+
+      <div class="paper-list">
+        <article class="paper-card" data-tags="closest benchmark evaluation validity">
+          <div class="paper-top"><div><div class="meta"><span class="badge">Example Venue · Poster</span><span class="badge orange">Benchmark</span><span class="badge blue">有效性</span></div><h3 class="paper-title">Example Paper A: Measuring Evidence Use in Multimodal Systems</h3><p class="paper-sub">虚构案例：展示 benchmark 论文如何回应指标有效性、数据筛选和简单基线不足等问题。</p></div><div class="relevance"><span><strong>9.2</strong>/ 10</span><small>示例相关度</small></div></div>
+          <div class="paper-body">
+            <div class="triad">
+              <div class="panel review"><h4>审稿人主要质疑</h4><ul><li>样本筛选规则是否主观，是否改变任务难度？</li><li>新指标是否只是普通准确率的另一种表达？</li><li>是否缺少随机、多数类和格式服从等简单基线？</li></ul></div>
+              <div class="panel response"><h4>作者如何回应</h4><ul><li>公开完整筛选流程、保留数量和人工一致性。</li><li>补充与传统指标的相关性及失败案例分析。</li><li>加入简单基线和不同模型上的敏感性实验。</li></ul></div>
+              <div class="panel lesson"><h4>对当前项目的启示</h4><ul><li>先证明旧指标看不到什么，再引入新指标。</li><li>报告数据流失、无效输出和人工审核结果。</li><li>让每个指标对应一个清晰、可检验的问题。</li></ul></div>
+            </div>
+            <div class="paper-foot"><span class="scoreline">示例分数 <span class="score-dot">5</span><span class="score-dot">6</span><span class="score-dot">6</span> · 回应后倾向更正面</span><a class="linkbtn" href="#" data-source-placeholder="openreview-url">Official review URL</a><button class="details-btn" aria-expanded="false">展开逐审稿摘要</button></div>
+          </div>
+          <div class="details"><div class="review-notes"><div class="review-note"><strong>Reviewer 1</strong><p>虚构意见：要求解释样本筛选、随机基线和指标的独立价值。</p></div><div class="review-note"><strong>Reviewer 2</strong><p>虚构意见：担心模型仅学习输出格式，要求加入格式控制实验。</p></div><div class="review-note"><strong>Meta-review</strong><p>虚构总结：新增分析缓解了主要疑问，但外部验证仍应写入限制。</p></div></div></div>
+        </article>
+
+        <article class="paper-card" data-tags="closest method counterfactual novelty">
+          <div class="paper-top"><div><div class="meta"><span class="badge">Example Venue · Oral</span><span class="badge purple">反事实方法</span><span class="badge blue">创新性</span></div><h3 class="paper-title">Example Paper B: Counterfactual Alignment for Reliable Decisions</h3><p class="paper-sub">虚构案例：展示反事实训练方法如何回应“只是数据增强”、干预伪影和损失设计不清等问题。</p></div><div class="relevance"><span><strong>8.7</strong>/ 10</span><small>示例相关度</small></div></div>
+          <div class="paper-body">
+            <div class="triad">
+              <div class="panel review"><h4>审稿人主要质疑</h4><ul><li>方法与普通增强、hard negative 或标准偏好训练有何区别？</li><li>反事实编辑是否带来可投机的低层伪影？</li><li>多个损失项分别发挥什么作用？</li></ul></div>
+              <div class="panel response"><h4>作者如何回应</h4><ul><li>补充同数据量的标准训练和错误配对对照。</li><li>报告图像质量、人工盲审和边界统计。</li><li>新增单项损失消融及训练目标的数学说明。</li></ul></div>
+              <div class="panel lesson"><h4>对当前项目的启示</h4><ul><li>创新性要落在学习目标，而不是数据数量。</li><li>反事实干预必须证明只改变目标因素。</li><li>消融应解释机制，而不只展示性能下降。</li></ul></div>
+            </div>
+            <div class="paper-foot"><span class="scoreline">示例分数 <span class="score-dot">4</span><span class="score-dot">5</span><span class="score-dot">6</span> · 新实验解决部分疑问</span><a class="linkbtn" href="#" data-source-placeholder="openreview-url">Official review URL</a><button class="details-btn" aria-expanded="false">展开逐审稿摘要</button></div>
+          </div>
+          <div class="details"><div class="review-notes"><div class="review-note"><strong>Reviewer 1</strong><p>虚构意见：认为方法接近普通数据增强，要求同预算受控比较。</p></div><div class="review-note"><strong>Reviewer 2</strong><p>虚构意见：反事实样本可能含人工痕迹，需要质量审计。</p></div><div class="review-note"><strong>Author reply</strong><p>虚构回应：补充随机配对、单损失消融和人工盲审结果。</p></div></div></div>
+        </article>
+
+        <article class="paper-card" data-tags="evaluation generality judge bias">
+          <div class="paper-top"><div><div class="meta"><span class="badge">Example Venue · Poster</span><span class="badge orange">Evaluation</span><span class="badge purple">泛化</span></div><h3 class="paper-title">Example Paper C: Stress-Testing Explanation Faithfulness</h3><p class="paper-sub">虚构案例：展示解释评估如何回应 judge 偏差、样本过滤和跨模型泛化不足等问题。</p></div><div class="relevance"><span><strong>8.1</strong>/ 10</span><small>示例相关度</small></div></div>
+          <div class="paper-body">
+            <div class="triad">
+              <div class="panel review"><h4>审稿人主要质疑</h4><ul><li>单一语言模型 judge 是否决定最终结论？</li><li>过滤无效输出会不会选择性提高指标？</li><li>同一模型家族上的实验能否支持普遍主张？</li></ul></div>
+              <div class="panel response"><h4>作者回应记录</h4><div class="missing">虚构示例中没有完整作者回应。正式页面若公开记录缺失，也必须明确标注，不能根据最终论文反推 rebuttal。</div></div>
+              <div class="panel lesson"><h4>对当前项目的启示</h4><ul><li>使用人工子集和第二 judge 复核。</li><li>同时报告解析率、覆盖率和失败计入方式。</li><li>严格区分黑盒行为证据与内部机制结论。</li></ul></div>
+            </div>
+            <div class="paper-foot"><span class="scoreline">示例分数 <span class="score-dot">4</span><span class="score-dot">4</span><span class="score-dot">5</span> · 仍存在边缘分歧</span><a class="linkbtn" href="#" data-source-placeholder="openreview-url">Official review URL</a><button class="details-btn" aria-expanded="false">展开逐审稿摘要</button></div>
+          </div>
+          <div class="details"><div class="review-notes"><div class="review-note"><strong>Reviewer 1</strong><p>虚构意见：质疑单一 judge 与过滤规则共同影响核心指标。</p></div><div class="review-note"><strong>Reviewer 2</strong><p>虚构意见：要求第二架构和外部数据验证。</p></div><div class="review-note"><strong>Status</strong><p>无公开回应示例；正式手册应准确披露信息缺失。</p></div></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="ours" class="shell">
+      <div class="section-head"><div><div class="section-kicker">Pre-review for the project</div><h2>如果我是审稿人，我会先问这些问题</h2></div><p class="section-note">正式手册应根据用户项目的实际主张和证据重新排序，不能照抄示例问题。</p></div>
+      <div class="risk-list">
+        <article class="risk"><h3>核心主张是否由实验直接支持？</h3><p><b>需要的证据：</b>把每项主张映射到对应实验、指标和失败案例。</p></article><article class="risk"><h3>数据构造是否引入新的捷径？</h3><p><b>需要的证据：</b>质量统计、人工审计、随机对照与来源分析。</p></article><article class="risk"><h3>方法是否只是更大训练预算？</h3><p><b>需要的证据：</b>同预算基线、单组件消融和错误配对对照。</p></article><article class="risk"><h3>结论是否过度依赖单一模型或数据？</h3><p><b>需要的证据：</b>第二架构、外部数据或未见条件的测试。</p></article><article class="risk"><h3>自动评估是否经过独立验证？</h3><p><b>需要的证据：</b>人工一致性、第二评估器和误差分析。</p></article><article class="risk"><h3>因果或机制措辞是否超出证据？</h3><p><b>需要的证据：</b>明确干预层级，并主动收窄无法识别的内部过程。</p></article>
+      </div>
+    </section>
+
+    <section id="rebuttal" class="shell">
+      <div class="section-head"><div><div class="section-kicker">Response strategy</div><h2>有效 rebuttal 的共同结构</h2></div><p class="section-note">这里展示可复用的回应结构；正式内容必须来自所选论文的公开作者回应。</p></div>
+      <div class="reply-box">
+        <div class="reply-rule"><h3>不要把 rebuttal 写成辩护书</h3><p>先承认问题成立的部分，再界定主张边界；能用新实验回答的就给结果，暂时无法完成的就清楚写入修改与限制。</p></div>
+        <div class="reply-steps"><div class="reply-step"><b>1</b><div><strong>复述真实问题</strong><p>表明你理解审稿人担心的是有效性、泛化还是创新性。</p></div></div><div class="reply-step"><b>2</b><div><strong>先给结论，再给证据</strong><p>用可核验的数字、实验或定义回应，不依赖抽象保证。</p></div></div><div class="reply-step"><b>3</b><div><strong>排除替代解释</strong><p>优先补受控消融、外部数据、人工验证或随机对照。</p></div></div><div class="reply-step"><b>4</b><div><strong>写清论文会改哪里</strong><p>指出将新增的表、附录、定义或限制。</p></div></div></div>
+      </div>
+    </section>
+
+    <section class="shell"><div class="source-box"><strong>模板说明</strong><br>本文件只展示版式与交互。所有论文标题、会议信息、分数、评审、回应和项目启示均为虚构示例，不对应任何真实研究。生成正式手册时，应将全部示例替换为经过核验的公开来源，并链接到官方 OpenReview forum 或会议记录；若作者回应不可得，必须明确披露。</div></section>
+  </main>
+
+  <footer class="shell">Generic OpenReview Casebook template · Fictional examples only · 可离线打开与打印。</footer>
+
+  <script>
+    const cards = [...document.querySelectorAll('.paper-card')];
+    const search = document.querySelector('#search');
+    const chips = [...document.querySelectorAll('.chip')];
+    let activeFilter = 'all';
+    function applyFilter() {
+      const q = search.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const matchTag = activeFilter === 'all' || card.dataset.tags.includes(activeFilter);
+        const matchText = !q || card.innerText.toLowerCase().includes(q);
+        card.hidden = !(matchTag && matchText);
+      });
+    }
+    chips.forEach(chip => chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active'); activeFilter = chip.dataset.filter; applyFilter();
+    }));
+    search.addEventListener('input', applyFilter);
+    document.querySelectorAll('.details-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panel = btn.closest('.paper-card').querySelector('.details');
+        const open = panel.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        btn.textContent = open ? '收起逐审稿摘要' : '展开逐审稿摘要';
+      });
+    });
+  </script>
+</body>
+</html>
